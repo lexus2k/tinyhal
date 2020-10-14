@@ -36,7 +36,7 @@ jobs:
       script:
         - make
         - make docs 1> /dev/null
-        - ./.travis/run_tests.sh
+#        - ./.travis/run_tests.sh
         - make clean
         - make EXTRA_CPPFLAGS="--coverage" check
       after_success:
