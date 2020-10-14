@@ -128,3 +128,47 @@ TEST(HAL,loglevel)
     CHECK_EQUAL( 0, g_tiny_log_level );
 }
 
+TEST(HAL,sleep)
+{
+    uint32_t start_ts = tiny_millis();
+    tiny_sleep(100);
+    uint32_t end_ts = tiny_millis();
+    if ( static_cast<uint32_t>(end_ts - start_ts) < 100 ||
+         static_cast<uint32_t>(end_ts - start_ts) > 150 )
+    {
+        FAIL("tiny_sleep() or tiny_millis() failure");
+    }
+}
+
+TEST(HAL, event_group)
+{
+    tiny_events_t events;
+    tiny_events_create( &events );
+    tiny_events_clear( &events, EVENT_BITS_ALL );
+    uint8_t bits = tiny_events_wait( &events, EVENT_BITS_ALL, EVENT_BITS_LEAVE, 0 );
+    std::thread concurrent_thread( [](tiny_events_t &events)->void
+    {
+        tiny_events_set( &events, 0x01 );
+        tiny_sleep( 100 );
+    }, std::ref(events) );
+    try
+    {
+        CHECK_EQUAL( 0x00, bits );
+        CHECK_EQUAL( 0x00, tiny_events_wait( &events, 0x04, EVENT_BITS_LEAVE, 50 ) );
+        uint32_t ts = tiny_millis();
+        CHECK_EQUAL( 0x01, tiny_events_wait( &events, 0x03, EVENT_BITS_CLEAR, 100 ) );
+        if ( static_cast<uint32_t>(tiny_millis() - ts) > 50 )
+        {
+            FAIL("tiny_events_wait() must exit immediately in this case");
+        }
+        CHECK_EQUAL( 0x00, tiny_events_wait( &events, EVENT_BITS_ALL, EVENT_BITS_LEAVE, 0 ) );
+    }
+    catch(...)
+    {
+        concurrent_thread.join();
+        tiny_events_destroy( &events );
+        throw;
+    }
+    concurrent_thread.join();
+    tiny_events_destroy( &events );
+}

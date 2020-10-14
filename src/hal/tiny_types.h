@@ -125,9 +125,9 @@ typedef int (*read_block_cb_t)(void *pdata, void *buffer, int size);
  */
 typedef void (*on_frame_cb_t)(void *handle, uint16_t uid, uint8_t *pdata, int size);
 
-#define EVENT_BIS_ALL  0xFF ///< All bits supported by tiny HAL events
-#define EVENT_BITS_CLEAR 1  ///< Flag, used in tiny_events_wait()
-#define EVENT_BITS_LEAVE 0  ///< Flag, used in tiny_events_wait()
+#define EVENT_BITS_ALL   0xFF ///< All bits supported by tiny HAL events
+#define EVENT_BITS_CLEAR 1    ///< Flag, used in tiny_events_wait()
+#define EVENT_BITS_LEAVE 0    ///< Flag, used in tiny_events_wait()
 
 /**
  * Creates cross-platform mutex.
