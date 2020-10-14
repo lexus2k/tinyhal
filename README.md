@@ -1,5 +1,5 @@
 ![TinyHal](.travis/tinylogo.svg)<br>
-[![Build Status](https://travis-ci.org/lexus2k/tinyhal.svg?branch=main)](https://travis-ci.org/lexus2k/tinyhal)
+[![Build Status](https://travis-ci.com/lexus2k/tinyhal.svg?branch=main)](https://travis-ci.com/lexus2k/tinyhal)
 [![Coverage Status](https://coveralls.io/repos/github/lexus2k/tinyhal/badge.svg?branch=master)](https://coveralls.io/github/lexus2k/tinyhal?branch=main)
 
 [tocstart]: # (toc start)
