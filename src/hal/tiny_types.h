@@ -50,7 +50,7 @@ extern "C" {
 #include <stdint.h>
 
 /**
- * @defgroup ERROR_FLAGS Return error codes for Tiny API functions
+ * @ingroup ERROR_CODES
  * @{
  */
 /// Tiny operation successful. Only tiny_send_start and tiny_read_start functions return this code
@@ -130,6 +130,11 @@ typedef void (*on_frame_cb_t)(void *handle, uint16_t uid, uint8_t *pdata, int si
 #define EVENT_BITS_LEAVE 0    ///< Flag, used in tiny_events_wait()
 
 /**
+ * @ingroup MUTEX
+ * @{
+ */
+
+/**
  * Creates cross-platform mutex.
  * @param mutex pointer to tiny_mutex_t variable.
  */
@@ -160,6 +165,13 @@ uint8_t tiny_mutex_try_lock(tiny_mutex_t *mutex);
  * @param mutex pointer to tiny_mutex_t variable.
  */
 void tiny_mutex_unlock(tiny_mutex_t *mutex);
+
+/** @} */
+
+/**
+ * @ingroup EVENTS
+ * @{
+ */
 
 /**
  * Creates cross platform event group object.
@@ -210,6 +222,13 @@ void tiny_events_set(tiny_events_t *event, uint8_t bits);
  */
 void tiny_events_clear(tiny_events_t *event, uint8_t bits);
 
+/** @} */
+
+/**
+ * @ingroup TIME
+ * @{
+ */
+
 /**
  * Sleeps for specified period in milliseconds.
  * @param ms time in milliseconds to sleep
@@ -220,6 +239,8 @@ void tiny_sleep(uint32_t ms);
  * Returns timestamp in milliseconds since system started up.
  */
 uint32_t tiny_millis();
+
+/** @} */
 
 /**
  * Sets logging level if tiny library is compiled with logs

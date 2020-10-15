@@ -29,6 +29,11 @@
 extern "C" {
 #endif
 
+/**
+ * @ingroup SERIAL
+ * @{
+ */
+
 #include <stdint.h>
 #if defined(__linux__)
 #include "serial/linux_serial.h"
@@ -109,6 +114,10 @@ extern int tiny_serial_read(tiny_serial_handle_t port, void *buf, int len);
  *         or number of bytes received
  */
 extern int tiny_serial_read_timeout(tiny_serial_handle_t port, void *buf, int len, uint32_t timeout_ms);
+
+/**
+ * @}
+ */
 
 
 #ifdef __cplusplus
