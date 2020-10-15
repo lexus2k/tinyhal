@@ -1,6 +1,7 @@
 ![TinyHal](.travis/tinylogo.svg)<br>
 [![Build Status](https://travis-ci.com/lexus2k/tinyhal.svg?branch=main)](https://travis-ci.com/lexus2k/tinyhal)
 [![Coverage Status](https://coveralls.io/repos/github/lexus2k/tinyhal/badge.svg?branch=main)](https://coveralls.io/github/lexus2k/tinyhal?branch=main)
+[![Doc Status](.travis/code_documented.svg)](.travis/code_documented.svg)
 
 [tocstart]: # (toc start)
 
@@ -93,7 +94,7 @@ cmake -G "Visual Studio 16 2019" ..
    * Run `make ARCH=avr`
 
 For more information about this library, please, visit https://github.com/lexus2k/tinyhal.
-Doxygen documentation can be found at [github.io site](http://lexus2k.github.io/tinyhal).
+Doxygen documentation can be found at [codedocs.xyz site](https://codedocs.xyz/lexus2k/tinyhal).
 If you found any problem or have any idea, please, report to Issues section.
 
 ## License
