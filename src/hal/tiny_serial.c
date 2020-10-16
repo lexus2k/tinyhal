@@ -19,11 +19,11 @@
 
 #if defined(__linux__)
 
-#include "serial/linux_serial.impl"
+#include "serial/linux_serial.inl"
 
 #elif defined(_WIN32)
 
-#include "serial/win32_serial.impl"
+#include "serial/win32_serial.inl"
 
 #else
 
