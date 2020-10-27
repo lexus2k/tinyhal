@@ -7,7 +7,7 @@ if [ "$2" = "" ]; then
     exit 1
 fi
 
-if [ ! -f "$2/lib/libtinyhal.a" ]; then
+if [ ! -f "$2/usr/lib/libtinyhal.a" ]; then
     echo "Library is not copied"
     exit 1
 fi
