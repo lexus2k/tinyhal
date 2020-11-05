@@ -1,5 +1,5 @@
 /*
-    Copyright 2017-2019 (C) Alexey Dynda
+    Copyright 2017-2020 (C) Alexey Dynda
 
     This file is part of Tiny HAL Library.
 
@@ -172,3 +172,29 @@ TEST(HAL, event_group)
     concurrent_thread.join();
     tiny_events_destroy( &events );
 }
+
+TEST(HAL, event_group_infinite_timeout)
+{
+    tiny_events_t events;
+    tiny_events_create( &events );
+    tiny_events_clear( &events, EVENT_BITS_ALL );
+    std::thread concurrent_thread( [](tiny_events_t &events)->void
+    {
+        tiny_sleep( 10 );
+        tiny_events_set( &events, 0x01 );
+    }, std::ref(events) );
+    try
+    {
+        CHECK_EQUAL( 0x01, tiny_events_wait( &events, 0x01, EVENT_BITS_CLEAR, 0xFFFFFFFF ) );
+        CHECK_EQUAL( 0x00, tiny_events_check_int( &events, EVENT_BITS_ALL, EVENT_BITS_LEAVE ) );
+    }
+    catch(...)
+    {
+        concurrent_thread.join();
+        tiny_events_destroy( &events );
+        throw;
+    }
+    concurrent_thread.join();
+    tiny_events_destroy( &events );
+}
+
