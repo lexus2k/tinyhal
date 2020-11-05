@@ -8,7 +8,6 @@ include(package-linker)
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.c)
 file(GLOB_RECURSE HEADER_FILES src/*.h)
 file(GLOB BASEDIR src)
-# file(GLOB_RECURSE HEADER_FILES src/*.h)
 
 register_static_library(NAME tinyhal
     SOURCES ${SOURCE_FILES}
