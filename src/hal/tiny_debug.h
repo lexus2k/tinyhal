@@ -48,7 +48,7 @@ enum
 #endif
 
 #if TINY_DEBUG
-#define TINY_LOG(lvl, fmt, ...)  { if (lvl < g_tiny_log_level) fprintf(stderr, "%08" PRIu32 " ms: "fmt, tiny_millis(), ##__VA_ARGS__); }
+#define TINY_LOG(lvl, fmt, ...)  { if (lvl < g_tiny_log_level) fprintf(stderr, "%08" PRIu32 " ms: " fmt, tiny_millis(), ##__VA_ARGS__); }
 #else
 #define TINY_LOG(...)
 #endif
