@@ -1,6 +1,6 @@
 {
   "name": "Tiny Hal",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tiny platform / hardware abstraction layer",
   "keywords": "hal arduino microcontroller",
   "authors":
@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/lexus2k/tinyhal",
   "export": {
-    "exclude": [ "docs/*", "unittest/*", "tools/*" ]
+    "exclude": [ "buildsys/*", "docs/*", "unittest/*", "tools/*" ]
   },
   "frameworks": [ "arduino" ],
   "platforms": "*"
