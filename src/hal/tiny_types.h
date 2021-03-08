@@ -30,7 +30,9 @@
 extern "C" {
 #endif
 
-#if defined(__AVR__)
+#if defined(TINY_CUSTOM_PLATFORM)
+#include "include/no_platform_hal.h"
+#elif defined(__AVR__)
 #include "include/avr_hal.h"
 #elif defined(__XTENSA__)
 #include "include/esp32_hal.h"

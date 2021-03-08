@@ -1,5 +1,5 @@
 /*
-    Copyright 2016-2020 (C) Alexey Dynda
+    Copyright 2016-2021 (C) Alexey Dynda
 
     This file is part of Tiny Tiny HAL Library.
 
@@ -20,7 +20,9 @@
 #include "tiny_types.h"
 #include "tiny_debug.h"
 
-#if defined(__AVR__)
+#if defined(TINY_CUSTOM_PLATFORM)
+#include "impl/no_platform_hal.inl"
+#elif defined(__AVR__)
 #include "impl/avr_hal.inl"
 #elif defined(__XTENSA__)
 #include "impl/esp32_hal.inl"

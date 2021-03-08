@@ -1,5 +1,5 @@
 /*
-    Copyright 2016-2019 (C) Alexey Dynda
+    Copyright 2016-2021 (C) Alexey Dynda
 
     This file is part of Tiny HAL Library.
 
@@ -29,6 +29,14 @@
 #ifndef CONFIG_ENABLE_CHECKSUM
 #   define CONFIG_ENABLE_CHECKSUM
 #endif
+
+//#ifndef CONFIG_ENABLE_FCS16
+//#   define CONFIG_ENABLE_FCS16
+//#endif
+
+//#ifndef CONFIG_ENABLE_FCS32
+//#   define CONFIG_ENABLE_FCS32
+//#endif
 
 /**
  * Mutex type used by Tiny HAL implementation.

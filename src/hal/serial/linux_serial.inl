@@ -1,5 +1,5 @@
 /*
-    Copyright 2017-2020 (C) Alexey Dynda
+    Copyright 2017-2021 (C) Alexey Dynda
 
     This file is part of Tiny Tiny HAL Library.
 
