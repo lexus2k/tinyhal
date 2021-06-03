@@ -1,24 +1,25 @@
 /*
     Copyright 2019-2021 (C) Alexey Dynda
 
-    This file is part of Tiny HAL Library.
+    This file is part of Tiny Protocol Library.
 
-    Tiny HAL Library is free software: you can redistribute it and/or modify
+    Protocol Library is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    Tiny HAL Library is distributed in the hope that it will be useful,
+    Protocol Library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with Tiny HAL Library.  If not, see <http://www.gnu.org/licenses/>.
+    along with Protocol Library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <stdint.h>
 #include <errno.h>
+#include <profileapi.h>
 
 void tiny_mutex_create(tiny_mutex_t *mutex)
 {
@@ -32,12 +33,12 @@ void tiny_mutex_destroy(tiny_mutex_t *mutex)
 
 void tiny_mutex_lock(tiny_mutex_t *mutex)
 {
-    WaitForSingleObject( *mutex, INFINITE );
+    WaitForSingleObject(*mutex, INFINITE);
 }
 
 uint8_t tiny_mutex_try_lock(tiny_mutex_t *mutex)
 {
-    return WaitForSingleObject( *mutex, 0 ) == WAIT_OBJECT_0;
+    return WaitForSingleObject(*mutex, 0) == WAIT_OBJECT_0;
 }
 
 void tiny_mutex_unlock(tiny_mutex_t *mutex)
@@ -56,12 +57,11 @@ void tiny_events_create(tiny_events_t *events)
 
 void tiny_events_destroy(tiny_events_t *events)
 {
-//    pthread_cond_destroy(&events->cond);
+    //    pthread_cond_destroy(&events->cond);
     DeleteCriticalSection(&events->mutex);
 }
 
-uint8_t tiny_events_wait(tiny_events_t *events, uint8_t bits,
-                         uint8_t clear, uint32_t timeout)
+uint8_t tiny_events_wait(tiny_events_t *events, uint8_t bits, uint8_t clear, uint32_t timeout)
 {
     EnterCriticalSection(&events->mutex);
     events->waiters++;
@@ -69,29 +69,30 @@ uint8_t tiny_events_wait(tiny_events_t *events, uint8_t bits,
     while ( (events->bits & bits) == 0 )
     {
         uint32_t start_ms = tiny_millis();
-        if (timeout == 0xFFFFFFFF)
+        if ( timeout == 0xFFFFFFFF )
         {
-            SleepConditionVariableCS( &events->cond, &events->mutex, INFINITE );
+            SleepConditionVariableCS(&events->cond, &events->mutex, INFINITE);
         }
         else
         {
-            if ( !SleepConditionVariableCS( &events->cond, &events->mutex, timeout ))
+            if ( !SleepConditionVariableCS(&events->cond, &events->mutex, timeout) )
             {
                 res = 1;
                 break;
             }
         }
         uint32_t delta = (uint32_t)(tiny_millis() - start_ms);
-        if (timeout != 0xFFFFFFFF)
+        if ( timeout != 0xFFFFFFFF )
         {
-            timeout -= delta > timeout ? timeout: delta;
+            timeout -= delta > timeout ? timeout : delta;
         }
     }
     uint8_t locked = 0;
     if ( res != 1 )
     {
         locked = events->bits;
-        if ( clear ) events->bits &= ~bits;
+        if ( clear )
+            events->bits &= ~bits;
     }
     events->waiters--;
     LeaveCriticalSection(&events->mutex);
@@ -118,12 +119,37 @@ void tiny_events_clear(tiny_events_t *events, uint8_t bits)
     LeaveCriticalSection(&events->mutex);
 }
 
-void tiny_sleep( uint32_t millis )
+void tiny_sleep(uint32_t millis)
 {
-    Sleep( millis );
+    Sleep(millis);
+}
+
+void tiny_sleep_us(uint32_t us)
+{
+    HANDLE timer;
+    LARGE_INTEGER ft;
+
+    ft.QuadPart = -(10 * (__int64)us);
+
+    timer = CreateWaitableTimer(NULL, TRUE, NULL);
+    SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0);
+    WaitForSingleObject(timer, INFINITE);
+    CloseHandle(timer);
 }
 
 uint32_t tiny_millis()
 {
     return GetTickCount();
+}
+
+uint32_t tiny_micros()
+{
+    LARGE_INTEGER T;
+    LARGE_INTEGER F;
+
+    QueryPerformanceFrequency(&F); 
+    QueryPerformanceCounter(&T);
+
+    T.QuadPart = T.QuadPart * 1000000 / F.QuadPart;
+    return (uint32_t)T.QuadPart;
 }

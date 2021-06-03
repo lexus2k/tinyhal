@@ -1,20 +1,20 @@
 /*
     Copyright 2019-2021 (C) Alexey Dynda
 
-    This file is part of Tiny HAL Library.
+    This file is part of Tiny Protocol Library.
 
-    Tiny HAL Library is free software: you can redistribute it and/or modify
+    Protocol Library is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    Tiny HAL Library is distributed in the hope that it will be useful,
+    Protocol Library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with Tiny HAL Library.  If not, see <http://www.gnu.org/licenses/>.
+    along with Protocol Library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #if defined(ARDUINO)
@@ -37,22 +37,34 @@ inline static int _iSetPrimask(int priMask)
     return 0;
 }
 
-#define ATOMIC_BLOCK \
-     for(int mask = _iDisGetPrimask(), flag = 1;\
-         flag;\
-         flag = _iSetPrimask(mask))
+#define ATOMIC_BLOCK for ( int mask = _iDisGetPrimask(), flag = 1; flag; flag = _iSetPrimask(mask) )
 
-#include "hal_single_core.inl"
+#include "../single_core/hal_single_core.inl"
 
 void tiny_sleep(uint32_t ms)
 {
-    if (!ms) return;
+    if ( !ms )
+        return;
 #if defined(ARDUINO)
-    return delay( ms );
+    return delay(ms);
 #else
-    while (ms--)
+    while ( ms-- )
     {
         _delay_ms(1);
+    }
+#endif
+}
+
+void tiny_sleep_us(uint32_t us)
+{
+    if ( !us )
+        return;
+#if defined(ARDUINO)
+    return delayMicroseconds(us);
+#else
+    while ( us-- )
+    {
+        _delay_us(1);
     }
 #endif
 }
@@ -66,4 +78,11 @@ uint32_t tiny_millis()
 #endif
 }
 
-
+uint32_t tiny_micros()
+{
+#if defined(ARDUINO)
+    return micros();
+#else
+    return 0;
+#endif
+}

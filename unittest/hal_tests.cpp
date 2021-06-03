@@ -198,3 +198,32 @@ TEST(HAL, event_group_infinite_timeout)
     tiny_events_destroy( &events );
 }
 
+TEST(HAL, millis)
+{
+    uint32_t start = tiny_millis();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    uint32_t delta = static_cast<uint32_t>( tiny_millis() - start );
+//    fprintf(stderr, "DELTA: %d\n", delta );
+    bool result = delta >= 100 && delta < 120;
+    CHECK_TEXT( result, "Timestamping functions are incorrect" );
+    tiny_sleep( 100 );
+    delta = static_cast<uint32_t>( tiny_millis() - start );
+//    fprintf(stderr, "DELTA: %d\n", delta );
+    result = delta >= 200 && delta < 220;
+    CHECK_TEXT( result, "Sleep function works incorrectly" );
+}
+
+TEST(HAL, micros)
+{
+    uint32_t start = tiny_micros();
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    uint32_t delta = static_cast<uint32_t>( tiny_micros() - start );
+//    fprintf(stderr, "DELTA: %d\n", delta );
+    bool result = delta >= 1000 && delta < 1500;
+    CHECK_TEXT( result, "Timestamping functions are incorrect" );
+    tiny_sleep_us( 100 );
+    delta = static_cast<uint32_t>( tiny_micros() - start );
+//    fprintf(stderr, "DELTA: %d\n", delta );
+    result = delta >= 1100 && delta < 1600;
+    CHECK_TEXT( result, "Sleep function works incorrectly" );
+}

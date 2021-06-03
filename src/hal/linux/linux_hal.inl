@@ -1,20 +1,20 @@
 /*
     Copyright 2019-2021 (C) Alexey Dynda
 
-    This file is part of Tiny HAL Library.
+    This file is part of Tiny Protocol Library.
 
-    Tiny HAL Library is free software: you can redistribute it and/or modify
+    Protocol Library is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    Tiny HAL Library is distributed in the hope that it will be useful,
+    Protocol Library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with Tiny HAL Library.  If not, see <http://www.gnu.org/licenses/>.
+    along with Protocol Library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <pthread.h>
@@ -35,7 +35,7 @@ void tiny_mutex_destroy(tiny_mutex_t *mutex)
 
 void tiny_mutex_lock(tiny_mutex_t *mutex)
 {
-    pthread_mutex_lock( mutex );
+    pthread_mutex_lock(mutex);
 }
 
 uint8_t tiny_mutex_try_lock(tiny_mutex_t *mutex)
@@ -45,7 +45,7 @@ uint8_t tiny_mutex_try_lock(tiny_mutex_t *mutex)
 
 void tiny_mutex_unlock(tiny_mutex_t *mutex)
 {
-    pthread_mutex_unlock( mutex );
+    pthread_mutex_unlock(mutex);
 }
 
 void tiny_events_create(tiny_events_t *events)
@@ -66,8 +66,7 @@ void tiny_events_destroy(tiny_events_t *events)
     pthread_mutex_destroy(&events->mutex);
 }
 
-uint8_t tiny_events_wait(tiny_events_t *events, uint8_t bits,
-                         uint8_t clear, uint32_t timeout)
+uint8_t tiny_events_wait(tiny_events_t *events, uint8_t bits, uint8_t clear, uint32_t timeout)
 {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -78,18 +77,18 @@ uint8_t tiny_events_wait(tiny_events_t *events, uint8_t bits,
         ts.tv_nsec -= 1000000000ULL;
         ts.tv_sec++;
     }
-    pthread_mutex_lock( &events->mutex );
+    pthread_mutex_lock(&events->mutex);
     events->waiters++;
     int res = 0;
     while ( (events->bits & bits) == 0 )
     {
-        if (timeout == 0xFFFFFFFF)
+        if ( timeout == 0xFFFFFFFF )
         {
             pthread_cond_wait(&events->cond, &events->mutex);
         }
         else
         {
-            res = pthread_cond_timedwait(&events->cond, &events->mutex, &ts );
+            res = pthread_cond_timedwait(&events->cond, &events->mutex, &ts);
             if ( res == ETIMEDOUT )
             {
                 break;
@@ -100,10 +99,11 @@ uint8_t tiny_events_wait(tiny_events_t *events, uint8_t bits,
     if ( res != ETIMEDOUT )
     {
         locked = events->bits;
-        if ( clear ) events->bits &= ~bits;
+        if ( clear )
+            events->bits &= ~bits;
     }
     events->waiters--;
-    pthread_mutex_unlock( &events->mutex );
+    pthread_mutex_unlock(&events->mutex);
     return locked;
 }
 
@@ -114,22 +114,27 @@ uint8_t tiny_events_check_int(tiny_events_t *event, uint8_t bits, uint8_t clear)
 
 void tiny_events_set(tiny_events_t *events, uint8_t bits)
 {
-    pthread_mutex_lock( &events->mutex );
+    pthread_mutex_lock(&events->mutex);
     events->bits |= bits;
     pthread_cond_broadcast(&events->cond);
-    pthread_mutex_unlock( &events->mutex );
+    pthread_mutex_unlock(&events->mutex);
 }
 
 void tiny_events_clear(tiny_events_t *events, uint8_t bits)
 {
-    pthread_mutex_lock( &events->mutex );
+    pthread_mutex_lock(&events->mutex);
     events->bits &= ~bits;
-    pthread_mutex_unlock( &events->mutex );
+    pthread_mutex_unlock(&events->mutex);
 }
 
-void tiny_sleep( uint32_t millis )
+void tiny_sleep(uint32_t millis)
 {
-    usleep( millis * 1000 );
+    usleep(millis * 1000);
+}
+
+void tiny_sleep_us(uint32_t us)
+{
+    usleep(us);
 }
 
 uint32_t tiny_millis()
@@ -137,4 +142,11 @@ uint32_t tiny_millis()
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return (ts.tv_sec * 1000) + ts.tv_nsec / 1000000;
+}
+
+uint32_t tiny_micros()
+{
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (ts.tv_sec * 1000000) + ts.tv_nsec / 1000;
 }

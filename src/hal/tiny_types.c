@@ -1,42 +1,42 @@
 /*
     Copyright 2016-2021 (C) Alexey Dynda
 
-    This file is part of Tiny Tiny HAL Library.
+    This file is part of Tiny Protocol Library.
 
-    Tiny HAL Library is free software: you can redistribute it and/or modify
+    Protocol Library is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    Tiny HAL Library is distributed in the hope that it will be useful,
+    Protocol Library is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with Tiny HAL Library.  If not, see <http://www.gnu.org/licenses/>.
+    along with Protocol Library.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "tiny_types.h"
 #include "tiny_debug.h"
 
 #if defined(TINY_CUSTOM_PLATFORM)
-#include "impl/no_platform_hal.inl"
+#include "no_platform/no_platform_hal.inl"
 #elif defined(__AVR__)
-#include "impl/avr_hal.inl"
+#include "avr/avr_hal.inl"
 #elif defined(__XTENSA__)
-#include "impl/esp32_hal.inl"
+#include "esp32/esp32_hal.inl"
 #elif defined(ARDUINO)
-#include "impl/arduino_hal.inl"
+#include "arduino/arduino_hal.inl"
 #elif defined(__linux__)
-#include "impl/linux_hal.inl"
+#include "linux/linux_hal.inl"
 #elif defined(__MINGW32__)
-#include "impl/mingw32_hal.inl"
+#include "mingw32/mingw32_hal.inl"
 #elif defined(_WIN32)
-#include "impl/win32_hal.inl"
+#include "win32/win32_hal.inl"
 #else
 #warning "Platform not supported. Multithread support is disabled"
-#include "impl/no_platform_hal.inl"
+#include "no_platform/no_platform_hal.inl"
 #endif
 
 uint8_t g_tiny_log_level = TINY_LOG_LEVEL_DEFAULT;
